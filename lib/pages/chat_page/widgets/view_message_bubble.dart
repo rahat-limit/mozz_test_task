@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ViewMessageBubble extends StatelessWidget {
   final bool isMe;
   final String text;
-  final String timestamp;
+  final Timestamp? timestamp;
   const ViewMessageBubble(
       {super.key,
       required this.isMe,
@@ -52,9 +53,9 @@ class ViewMessageBubble extends StatelessWidget {
                 Expanded(
                     child: Text(
                   textAlign: TextAlign.left,
-                  timeFormat.format(
-                    DateTime.parse(timestamp),
-                  ),
+                  timestamp == null
+                      ? ''
+                      : timeFormat.format(timestamp!.toDate()),
                   style: const TextStyle(
                       color: Colors.white70,
                       fontSize: 13,

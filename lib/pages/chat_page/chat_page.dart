@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mozz_test_task/pages/chat_page/widgets/custom_text_field.dart';
@@ -126,7 +127,7 @@ class _ChatPageState extends State<ChatPage> {
                               text: e['text'],
                               isMe: e['userId'].toString().trim() ==
                                   myId.toString().trim(),
-                              timestamp: e['timestamp']);
+                              timestamp: (e['timestamp'] as Timestamp?));
                         })
                       ],
                     ),

@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:790133033564:android:fd33c7805672cca5e03499",
         "android_client_info": {
-          "package_name": "mozz.test.chat.app"
+          "package_name": "com.example.mozz_test_task"
         }
       },
       "oauth_client": [],

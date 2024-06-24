@@ -11,6 +11,7 @@ class ChatService {
         .map((snap) {
       return snap.docs.map((doc) {
         final chat = doc.data();
+
         return chat;
       }).toList();
     });
@@ -24,7 +25,7 @@ class ChatService {
         .add({
       'userId': myId,
       'text': text,
-      'timestamp': DateTime.now().toString()
+      'timestamp': FieldValue.serverTimestamp()
     });
   }
 
