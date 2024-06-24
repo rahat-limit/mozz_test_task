@@ -30,7 +30,7 @@ class _ChatRoomsPageState extends State<ChatRoomsPage> {
             stream: _chatService.getChatsStream(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
 
               // if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -38,28 +38,36 @@ class _ChatRoomsPageState extends State<ChatRoomsPage> {
               // }
 
               var chatRooms = snapshot.data!;
-              print(chatRooms);
+
               return ListView.builder(
                 itemCount: chatRooms.length,
                 itemBuilder: (context, index) {
                   var chatRoom = chatRooms[index];
-                  var chatRoomId = chatRoom['user1'] == id
-                      ? chatRoom['user2']
-                      : chatRoom['user1'];
-
-                  return ListTile(
-                    title: Text('Chat Room $chatRoomId'),
-                    // subtitle: Text('Participants: ${participants.join(', ')}'),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ChatPage(chatRoomId: chatRoom['id']),
-                        ),
-                      );
-                    },
-                  );
+                  var userId1 = chatRoom['user1'].toString().trim();
+                  var userId2 = chatRoom['user2'].toString().trim();
+                  var chatRoomId = userId1 == id ? userId2 : userId1;
+                  if (userId1 != id && userId2 != id) {
+                    return const SizedBox();
+                  }
+                  return Column(children: [
+                    ListTile(
+                      title: Text('Chat Room with $chatRoomId'),
+                      // subtitle: Text('Participants: ${participants.join(', ')}'),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ChatPage(
+                                chatRoomId: chatRoom['id'],
+                                senderId: chatRoomId),
+                          ),
+                        );
+                      },
+                    ),
+                    Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Divider())
+                  ]);
                 },
               );
             }));

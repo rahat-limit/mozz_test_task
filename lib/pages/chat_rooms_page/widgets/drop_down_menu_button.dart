@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mozz_test_task/main.dart';
 import 'package:mozz_test_task/provider/user_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:mozz_test_task/pages/chat_rooms_page/chat_rooms_page.dart';
 
-const List<String> list = <String>['User1', 'User2', 'User3', 'User4'];
+const List<String> list = <String>['User 1', 'User 2', 'User 3', 'User 4'];
 
 class DropDownMenuButton extends StatefulWidget {
   const DropDownMenuButton({super.key});
@@ -26,7 +24,7 @@ class _DropDownMenuButtonState extends State<DropDownMenuButton> {
         Provider.of<UserProvider>(context, listen: false).changeUser(value!);
         // }
         setState(() {
-          dropdownValue = value!;
+          dropdownValue = value;
         });
       },
       dropdownMenuEntries: list.map<DropdownMenuEntry<String>>((String value) {

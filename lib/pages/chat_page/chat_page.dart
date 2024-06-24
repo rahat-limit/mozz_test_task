@@ -2,11 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mozz_test_task/pages/chat_page/widgets/custom_text_field.dart';
 import 'package:mozz_test_task/pages/chat_page/widgets/view_message_bubble.dart';
+import 'package:mozz_test_task/provider/user_provider.dart';
 import 'package:mozz_test_task/services/chat_service.dart';
+import 'package:provider/provider.dart';
 
 class ChatPage extends StatefulWidget {
   final String chatRoomId;
-  const ChatPage({super.key, required this.chatRoomId});
+  final String senderId;
+  const ChatPage({super.key, required this.chatRoomId, required this.senderId});
 
   @override
   State<ChatPage> createState() => _ChatPageState();
@@ -14,23 +17,39 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   TextEditingController controller = TextEditingController();
+  ChatService _chatService = ChatService();
+
   final ScrollController _scrollController = ScrollController();
-  void sendMessage() {}
+
   @override
   Widget build(BuildContext context) {
-    ChatService _chatService = ChatService();
+    var myId = context.watch<UserProvider>().getUserId;
+
+    void sendMessage() {
+      if (controller.text.isNotEmpty) {
+        _chatService.sendMessage(
+            widget.chatRoomId, controller.text.trim(), myId);
+      }
+      controller.clear();
+    }
 
     return Scaffold(
+      appBar: AppBar(
+          titleSpacing: 0,
+          title: Text(
+            widget.senderId,
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 24),
+          ),
+          centerTitle: false),
       body: SafeArea(
-        child: StreamBuilder<QuerySnapshot>(
+        child: StreamBuilder<List<Map<String, dynamic>>>(
           stream: _chatService.getMessages(widget.chatRoomId),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
 
-            var messages = snapshot.data!.docs;
-            print(messages);
+            var messages = snapshot.data;
 
             return Padding(
               padding: const EdgeInsets.all(16.0),
@@ -50,9 +69,13 @@ class _ChatPageState extends State<ChatPage> {
                         //       height: 40,
                         //       child: const CircularProgressIndicator(
                         //           strokeWidth: 3)),
-                        ViewMessageBubble(text: "e['text']", isMe: true),
-                        ...messages.map((e) =>
-                            ViewMessageBubble(text: e['text'], isMe: true))
+                        ...messages!.map((e) {
+                          return ViewMessageBubble(
+                              text: e['text'],
+                              isMe: e['userId'].toString().trim() ==
+                                  myId.toString().trim(),
+                              timestamp: e['timestamp']);
+                        })
                       ],
                     ),
                   );

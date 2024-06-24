@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ViewMessageBubble extends StatelessWidget {
   final bool isMe;
   final String text;
-  const ViewMessageBubble({super.key, required this.isMe, required this.text});
+  final String timestamp;
+  const ViewMessageBubble(
+      {super.key,
+      required this.isMe,
+      required this.text,
+      required this.timestamp});
 
   @override
   Widget build(BuildContext context) {
+    DateFormat timeFormat = DateFormat('HH:mm');
     return ChatBubble(
-      margin: const EdgeInsets.symmetric(vertical: 16),
-      clipper: ChatBubbleClipper5(type: BubbleType.receiverBubble),
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      clipper: ChatBubbleClipper5(
+          type: isMe ? BubbleType.sendBubble : BubbleType.receiverBubble),
       alignment: isMe ? Alignment.topRight : Alignment.topLeft,
       backGroundColor: isMe ? Colors.lightBlue : Colors.blueAccent,
       child: Column(
         children: [
           Container(
+            padding:
+                const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 5),
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * 0.5,
             ),
@@ -24,11 +34,35 @@ class ViewMessageBubble extends StatelessWidget {
                     child: Text(
                   text,
                   textAlign: TextAlign.left,
-                  style: TextStyle(color: Colors.black),
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600),
                 ))
               ],
             ),
           ),
+          Container(
+            width: MediaQuery.of(context).size.width * 0.5,
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SizedBox(width: 10),
+                Expanded(
+                    child: Text(
+                  textAlign: TextAlign.left,
+                  timeFormat.format(
+                    DateTime.parse(timestamp),
+                  ),
+                  style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600),
+                ))
+              ],
+            ),
+          )
         ],
       ),
     );

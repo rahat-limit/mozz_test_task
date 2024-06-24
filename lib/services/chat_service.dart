@@ -1,13 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatService {
-  Stream<QuerySnapshot> getMessages(String chatRoomId) {
+  Stream<List<Map<String, dynamic>>> getMessages(String chatRoomId) {
     return FirebaseFirestore.instance
         .collection('chats')
         .doc(chatRoomId)
         .collection('messages')
-        // .orderBy('timestamp', descending: true)
-        .snapshots();
+        .orderBy('timestamp', descending: false)
+        .snapshots()
+        .map((snap) {
+      return snap.docs.map((doc) {
+        final chat = doc.data();
+        return chat;
+      }).toList();
+    });
   }
 
   Future<void> sendMessage(String chatRoomId, String text, String myId) async {
