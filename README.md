@@ -6,7 +6,7 @@ Welcome to my respository, which I created due to Mozz Test Task. Here you can e
   <img src = "https://github.com/rahat-limit/mozz_test_task/blob/main/assets/chat.png" width=300>
 </p>
 
-## ✖️ Вместо аутентификации, для большего удобства были созаны тестовые аккаунты и добавленна кнопка для перехода на другой профиль.
+## ✖️ Вместо аутентификации, для большего удобства были созданы тестовые аккаунты и добавлена кнопка для перехода на другой профиль.
 
 <p align="center">
   <img src = "https://github.com/rahat-limit/mozz_test_task/blob/main/assets/auth.png" width=300>
