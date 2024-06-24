@@ -1,6 +1,8 @@
 ## Introduction
 Welcome to my respository, which I created due to Mozz Test Task. Here you can easily take a look at some images of app itself and read more info about it. Hope you like it🤙
 
+## ✖️ Тестовое задание было сделано за 2.5 часа.
+
 <p align="center">
   <img src = "https://github.com/rahat-limit/mozz_test_task/blob/main/assets/chats.png" width=300>
   <img src = "https://github.com/rahat-limit/mozz_test_task/blob/main/assets/chat.png" width=300>
