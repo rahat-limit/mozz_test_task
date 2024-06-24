@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mozz_test_task/pages/chat_page/widgets/custom_text_field.dart';
 import 'package:mozz_test_task/pages/chat_page/widgets/view_message_bubble.dart';
@@ -17,9 +17,45 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   TextEditingController controller = TextEditingController();
-  ChatService _chatService = ChatService();
+  final ChatService _chatService = ChatService();
 
   final ScrollController _scrollController = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(milliseconds: 200)).then((_) {
+      _scrollToBottom();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+    controller.clear();
+  }
+
+  void _scrollToOffset(double? offset) {
+    if (offset != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scrollController.hasClients) {
+          _scrollController.jumpTo(offset);
+        }
+      });
+    }
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,18 +69,41 @@ class _ChatPageState extends State<ChatPage> {
       controller.clear();
     }
 
+    void clear() {
+      _chatService.clearChatHistory(widget.chatRoomId);
+    }
+
     return Scaffold(
       appBar: AppBar(
-          titleSpacing: 0,
-          title: Text(
-            widget.senderId,
-            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 24),
+        titleSpacing: 0,
+        title: Text(
+          widget.senderId,
+          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 24),
+        ),
+        centerTitle: false,
+        actions: [
+          TextButton.icon(
+            style: ButtonStyle(
+              side: WidgetStateProperty.all(
+                  const BorderSide(color: Colors.grey, width: 1)),
+              shape: WidgetStateProperty.all(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+            ),
+            icon: const Icon(Icons.cleaning_services),
+            onPressed: clear,
+            label: const Text('Clear Chat History'),
           ),
-          centerTitle: false),
+          const SizedBox(width: 10)
+        ],
+      ),
       body: SafeArea(
         child: StreamBuilder<List<Map<String, dynamic>>>(
           stream: _chatService.getMessages(widget.chatRoomId),
           builder: (context, snapshot) {
+            _scrollToBottom();
             if (!snapshot.hasData) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -62,13 +121,6 @@ class _ChatPageState extends State<ChatPage> {
                         : const EdgeInsets.only(bottom: 150.0),
                     child: Column(
                       children: [
-                        // if (chatLoading)
-                        //   Container(
-                        //       padding: const EdgeInsets.all(8),
-                        //       width: 40,
-                        //       height: 40,
-                        //       child: const CircularProgressIndicator(
-                        //           strokeWidth: 3)),
                         ...messages!.map((e) {
                           return ViewMessageBubble(
                               text: e['text'],
@@ -82,17 +134,6 @@ class _ChatPageState extends State<ChatPage> {
                 }),
               ),
             );
-            // return ListView.builder(
-            //   itemCount: messages.length,
-            //   reverse: true,
-            //   itemBuilder: (context, index) {
-            //     var message = messages[index];
-            //     return ListTile(
-            //       title: Text(message['text']),
-            //       subtitle: Text(message['senderId']),
-            //     );
-            //   },
-            // );
           },
         ),
       ),

@@ -35,11 +35,21 @@ class ChatService {
         .map((snap) {
       return snap.docs.map((doc) {
         final chat = doc.data();
-
-        print(chat);
-
         return {...chat, "id": doc.id};
       }).toList();
     });
+  }
+
+  Future clearChatHistory(String chatRoomId) async {
+    var collections = FirebaseFirestore.instance
+        .collection('chats')
+        .doc(chatRoomId)
+        .collection('messages');
+
+    var snapshots = await collections.get();
+
+    for (var doc in snapshots.docs) {
+      await doc.reference.delete();
+    }
   }
 }

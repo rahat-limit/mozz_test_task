@@ -48,7 +48,7 @@ class ViewMessageBubble extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
                     child: Text(
                   textAlign: TextAlign.left,
@@ -101,8 +101,9 @@ class ChatBubble extends StatelessWidget {
   /// the selected clipper type.
   final EdgeInsetsGeometry? padding;
 
-  ChatBubble(
-      {this.clipper,
+  const ChatBubble(
+      {super.key,
+      this.clipper,
       this.child,
       this.margin,
       this.elevation,
@@ -114,7 +115,7 @@ class ChatBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: alignment ?? Alignment.topLeft,
-      margin: margin ?? EdgeInsets.all(0),
+      margin: margin ?? const EdgeInsets.all(0),
       child: PhysicalShape(
         clipper: clipper as CustomClipper<Path>,
         elevation: elevation ?? 2,
@@ -170,7 +171,7 @@ class ChatBubbleClipper5 extends CustomClipper<Path> {
       var path2 = Path();
       path2.addRRect(RRect.fromLTRBAndCorners(0, 0, radius, radius,
           topLeft: Radius.circular(secondRadius)));
-      path.addPath(path2, Offset(0, 0));
+      path.addPath(path2, const Offset(0, 0));
     }
 
     return path;
